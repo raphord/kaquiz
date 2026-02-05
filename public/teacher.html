@@ -44,11 +44,46 @@
         <script>
             let panels = []
             let panelMap = new Map()
+            let quiz = undefined
+            let participants = {}
+            let currentQuestionIndex = 0
+            let quizState = 'not-started'
+
+            function onStartSession() {
+                console.log("Handler: start session")
+            }
+
+            function onStartQuiz() {
+                console.log("Handler: start quiz")
+            }
+
+            function onEndQuiz() {
+                console.log("Handler: end quiz")
+            }
+
+            function onRestart() {
+                console.log("Handler: restart")
+            }
 
             function showStep(step) {
                 panels.forEach((panel) => {
                     panel.hidden = panel.dataset.step !== step
                 })
+            }
+
+            function runTransitionHandlers(nextStep) {
+                if (nextStep === "join") {
+                    onStartSession()
+                }
+                if (nextStep === "quiz") {
+                    onStartQuiz()
+                }
+                if (nextStep === "results") {
+                    onEndQuiz()
+                }
+                if (nextStep === "upload") {
+                    onRestart()
+                }
             }
 
             function handleClick(event) {
@@ -60,6 +95,7 @@
                 if (!panelMap.has(nextStep)) {
                     return
                 }
+                runTransitionHandlers(nextStep)
                 showStep(nextStep)
             }
 
