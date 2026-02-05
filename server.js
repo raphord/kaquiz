@@ -10,6 +10,14 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/index.html")
 })
 
+app.get('/teacher', (req, res) => {
+    res.sendFile(__dirname + "/public/teacher.html")
+})
+
+app.get('/quiz-answer', (req, res) => {
+    res.sendFile(__dirname + "/public/quiz_answer.html")
+})
+
 app.listen(PORT, () => {
     console.log(`Quiz server running on http://localhost:${PORT}`)
 })
