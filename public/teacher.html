@@ -1,1 +1,82 @@
-This is the main teacher page with the json file upload and control system.
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>PopQuiz Teacher</title>
+        <link rel="stylesheet" href="/public/style.css">
+    </head>
+    <body>
+        <main class="page">
+            <header class="header">
+                <h1>PopQuiz Teacher</h1>
+                <p>Teacher flow simulation (upload → join → quiz → results).</p>
+            </header>
+
+            <section class="panel" data-step="upload" aria-labelledby="quiz-upload-title">
+                <h2 id="quiz-upload-title">Quiz Upload</h2>
+                <form class="form">
+                    <label for="quiz-file">Quiz JSON file</label>
+                    <input id="quiz-file" name="quiz-file" type="file" accept="application/json">
+                    <button type="button" data-next="join">Start Session</button>
+                </form>
+            </section>
+
+            <section class="panel" data-step="join" aria-labelledby="join-title" hidden>
+                <h2 id="join-title">Student Signup</h2>
+                <p>Display QR code here.</p>
+                <button type="button" data-next="quiz">Start Quiz</button>
+            </section>
+
+            <section class="panel" data-step="quiz" aria-labelledby="quiz-title" hidden>
+                <h2 id="quiz-title">Quiz</h2>
+                <p>Quiz content goes here.</p>
+                <button type="button" data-next="results">End Quiz</button>
+            </section>
+
+            <section class="panel" data-step="results" aria-labelledby="results-title" hidden>
+                <h2 id="results-title">Results</h2>
+                <p>Results status goes here.</p>
+                <button type="button" data-next="upload">Restart</button>
+            </section>
+        </main>
+
+        <script>
+            let panels = []
+            let panelMap = new Map()
+
+            function showStep(step) {
+                panels.forEach((panel) => {
+                    panel.hidden = panel.dataset.step !== step
+                })
+            }
+
+            function handleClick(event) {
+                const button = event.target.closest("button[data-next]")
+                if (!button) {
+                    return
+                }
+                const nextStep = button.dataset.next
+                if (!panelMap.has(nextStep)) {
+                    return
+                }
+                showStep(nextStep)
+            }
+
+            function startPage() {
+                panels = Array.from(document.querySelectorAll("[data-step]"))
+                const panelEntries = []
+                for (let i = 0; i < panels.length; i += 1) {
+                    const panel = panels[i]
+                    panelEntries.push([panel.dataset.step, panel])
+                }
+                panelMap = new Map(panelEntries)
+
+                document.addEventListener("click", handleClick)
+                showStep("upload")
+            }
+
+            startPage()
+        </script>
+    </body>
+</html>
